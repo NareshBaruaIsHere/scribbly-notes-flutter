@@ -46,7 +46,3 @@ The app uses a clean architecture suitable for simple scalability:
    flutter run
    ```
 
-## Developer
-
-Built by **Naresh Barua**  
-GitHub / Alias: **IFELSEGHOST**
