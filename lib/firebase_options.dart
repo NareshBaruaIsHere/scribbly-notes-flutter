@@ -1,12 +1,15 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, TargetPlatform;
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
 /// Firebase configuration options for the Scribbly Notes app.
 ///
 /// Generated from the Firebase console for project `scribbly-notes`.
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
+    if (kIsWeb) {
+      return web;
+    }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
@@ -16,6 +19,15 @@ class DefaultFirebaseOptions {
         );
     }
   }
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyC6AWC2wsbCNgFFkzTNbT-YHbkY10WDqRg',
+    appId: '1:150413896225:web:61b8ad31a9b19601229160',
+    messagingSenderId: '150413896225',
+    projectId: 'scribbly-notes',
+    authDomain: 'scribbly-notes.firebaseapp.com',
+    storageBucket: 'scribbly-notes.firebasestorage.app',
+  );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBrtNL-RfzwIBRf9WHjkmneW4j5ywzYWeE',
