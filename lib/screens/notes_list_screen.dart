@@ -161,6 +161,20 @@ class _NotesListScreenState extends State<NotesListScreen> {
           );
         },
       ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Text(
+            'Build by Naresh Barua (IFELSEGHOST)',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: colors.text.withOpacity(0.5),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
