@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import '../models/note.dart';
 import '../services/firestore_service.dart';
 import '../widgets/note_card.dart';
+import '../widgets/neumorphic_container.dart';
+import '../theme/neumorphic_colors.dart';
 import 'add_edit_note_screen.dart';
 
-/// Displays all notes from Firestore in a scrollable list.
-///
-/// Uses a [StreamBuilder] to listen to real-time updates from Firestore.
-/// Shows a loading indicator while data is being fetched, and an empty
-/// state message when no notes exist.
 class NotesListScreen extends StatefulWidget {
   const NotesListScreen({super.key});
 
@@ -18,10 +15,15 @@ class NotesListScreen extends StatefulWidget {
 
 class _NotesListScreenState extends State<NotesListScreen> {
   final FirestoreService _firestoreService = FirestoreService();
+  late Stream<List<Note>> _notesStream;
 
-  /// Navigates to the Add/Edit screen.
-  ///
-  /// If [note] is provided, opens in edit mode; otherwise, opens in add mode.
+  @override
+  void initState() {
+    super.initState();
+    // Cache the stream to prevent recreating it on every rebuild
+    _notesStream = _firestoreService.getNotesStream();
+  }
+
   void _navigateToAddEdit({Note? note}) {
     Navigator.push(
       context,
@@ -31,21 +33,24 @@ class _NotesListScreenState extends State<NotesListScreen> {
     );
   }
 
-  /// Shows a confirmation dialog before deleting a note.
   void _confirmDelete(Note note) {
+    final colors = context.neumorphicColors;
+    
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Note'),
-        content: const Text(
+        backgroundColor: colors.background,
+        title: Text('Delete Note', style: TextStyle(color: colors.text)),
+        content: Text(
           'Are you sure you want to delete this note? This action cannot be undone.',
+          style: TextStyle(color: colors.text.withOpacity(0.8)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text('Cancel', style: TextStyle(color: colors.text)),
           ),
-          FilledButton(
+          TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
               try {
@@ -69,10 +74,7 @@ class _NotesListScreenState extends State<NotesListScreen> {
                 }
               }
             },
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: const Text('Delete'),
+            child: const Text('Delete', style: TextStyle(color: Colors.redAccent)),
           ),
         ],
       ),
@@ -81,97 +83,69 @@ class _NotesListScreenState extends State<NotesListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final colors = context.neumorphicColors;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notes'),
-        centerTitle: true,
+        title: const Text('Notes', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _navigateToAddEdit(),
-        icon: const Icon(Icons.add_rounded),
-        label: const Text('Add Note'),
+      floatingActionButton: NeumorphicContainer(
+        borderRadius: 28,
+        width: 56,
+        height: 56,
+        onTap: () => _navigateToAddEdit(),
+        child: Icon(Icons.add_rounded, color: colors.text),
       ),
       body: StreamBuilder<List<Note>>(
-        stream: _firestoreService.getNotesStream(),
+        stream: _notesStream,
         builder: (context, snapshot) {
-          // Loading state
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
-          // Error state
           if (snapshot.hasError) {
             return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.error_outline_rounded,
-                      size: 64,
-                      color: theme.colorScheme.error,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Something went wrong',
-                      style: theme.textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Could not load notes. Please check your connection.',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+              child: Text(
+                'Could not load notes.',
+                style: TextStyle(color: colors.text),
               ),
             );
           }
 
           final notes = snapshot.data ?? [];
 
-          // Empty state
           if (notes.isEmpty) {
             return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.note_add_outlined,
-                      size: 80,
-                      color: theme.colorScheme.primary.withValues(alpha: 0.5),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.note_add_outlined,
+                    size: 80,
+                    color: colors.text.withOpacity(0.3),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'No notes yet',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: colors.text,
                     ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'No notes yet',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap the + button to create your first note!',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: colors.text.withOpacity(0.7),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Tap the + button to create your first note!',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           }
 
-          // Data state — scrollable list of notes
           return ListView.separated(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
             itemCount: notes.length,

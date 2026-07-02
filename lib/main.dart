@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'screens/notes_list_screen.dart';
+import 'theme/neumorphic_colors.dart';
 
 void main() async {
-  // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize Firebase with platform-specific options
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
   runApp(const ScribblyApp());
 }
 
@@ -23,21 +20,35 @@ class ScribblyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Scribbly Notes',
       debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.system,
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF4F46E5), // Indigo primary color
-          brightness: Brightness.light,
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: NeumorphicColors.light.background,
+        colorScheme: ColorScheme.light(
+          surface: NeumorphicColors.light.background,
+          onSurface: NeumorphicColors.light.text,
         ),
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
+          backgroundColor: NeumorphicColors.light.background,
+          foregroundColor: NeumorphicColors.light.text,
           centerTitle: true,
           elevation: 0,
         ),
-        cardTheme: CardThemeData(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: NeumorphicColors.dark.background,
+        colorScheme: ColorScheme.dark(
+          surface: NeumorphicColors.dark.background,
+          onSurface: NeumorphicColors.dark.text,
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: NeumorphicColors.dark.background,
+          foregroundColor: NeumorphicColors.dark.text,
+          centerTitle: true,
+          elevation: 0,
         ),
       ),
       home: const NotesListScreen(),
