@@ -46,5 +46,3 @@ The app uses a clean architecture suitable for simple scalability:
    flutter run
    ```
 
-## Requirements Satisfied
-This project fulfills the complete requirements for building a Firebase-backed notes application, including real-time StreamBuilders, proper Firestore separation, UI feedback (SnackBars), and safe error handling.
