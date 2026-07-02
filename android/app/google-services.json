@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "150413896225",
+    "project_id": "scribbly-notes",
+    "storage_bucket": "scribbly-notes.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150413896225:android:347367005846e3ad229160",
+        "android_client_info": {
+          "package_name": "com.example.scribbly_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrtNL-RfzwIBRf9WHjkmneW4j5ywzYWeE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
